@@ -1,6 +1,7 @@
 package guru.morodev.spring5recipeapp.domain;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Created By Luca Moro on 26/10/2020 17:45
@@ -21,6 +22,9 @@ public class Recipe {
     private String directions;
     // todo add
     //private Difficulty difficulty;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
+    private Set<Ingredient> ingredientSet;
 
     @Lob
     private Byte[] image;
@@ -106,5 +110,13 @@ public class Recipe {
 
     public void setNotes(Notes notes) {
         this.notes = notes;
+    }
+
+    public Set<Ingredient> getIngredientSet() {
+        return ingredientSet;
+    }
+
+    public void setIngredientSet(Set<Ingredient> ingredientSet) {
+        this.ingredientSet = ingredientSet;
     }
 }
