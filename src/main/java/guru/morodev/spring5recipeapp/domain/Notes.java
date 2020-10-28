@@ -1,10 +1,13 @@
 package guru.morodev.spring5recipeapp.domain;
 
+import lombok.*;
+
 import javax.persistence.*;
 
 /**
  * Created by Luca Moro on 26/10/2020 17:47
  */
+@Data
 @Entity
 public class Notes {
 
@@ -18,27 +21,4 @@ public class Notes {
     @Lob
     private String recipeNotes;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Recipe getRecipe() {
-        return recipe;
-    }
-
-    public void setRecipe(Recipe recipe) {
-        this.recipe = recipe;
-    }
-
-    public String getRecipeNotes() {
-        return recipeNotes;
-    }
-
-    public void setRecipeNotes(String recipeNotes) {
-        this.recipeNotes = recipeNotes;
-    }
 }
