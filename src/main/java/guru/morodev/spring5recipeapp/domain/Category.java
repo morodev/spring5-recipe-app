@@ -1,6 +1,9 @@
 package guru.morodev.spring5recipeapp.domain;
 
-import lombok.*;
+
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -8,6 +11,7 @@ import java.util.Set;
 /**
  * Create By Luca Moro on 26/10/2020 18:35
  */
+
 @Data
 @EqualsAndHashCode(exclude = {"recipes"})
 @Entity
