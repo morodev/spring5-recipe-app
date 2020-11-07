@@ -1,5 +1,7 @@
 package guru.morodev.spring5recipeapp.services;
 
+import guru.morodev.spring5recipeapp.converters.RecipeCommandToRecipe;
+import guru.morodev.spring5recipeapp.converters.RecipeToRecipeCommand;
 import guru.morodev.spring5recipeapp.domain.Recipe;
 import guru.morodev.spring5recipeapp.repositories.RecipeRepositories;
 import org.junit.Before;
@@ -24,12 +26,17 @@ public class RecipeServiceImplTest {
     @Mock
     RecipeRepositories recipeRepositories;
 
+    @Mock
+    RecipeToRecipeCommand recipeToRecipeCommand;
+
+    @Mock
+    RecipeCommandToRecipe recipeCommandToRecipe;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        recipeService = new RecipeServiceImpl(recipeRepositories);
+        recipeService = new RecipeServiceImpl(recipeRepositories, recipeCommandToRecipe, recipeToRecipeCommand);
     }
 
     @Test
@@ -61,19 +68,5 @@ public class RecipeServiceImplTest {
         assertEquals(recipes.size(), 1);
         verify(recipeRepositories, times(1)).findAll();
         verify(recipeRepositories, never()).findById(anyLong());
-    }
-
-    @Test
-    public void getRecipes() {
-        Recipe recipe = new Recipe();
-        HashSet recipesData = new HashSet();
-        recipesData.add(recipe);
-
-        when(recipeRepositories.findAll()).thenReturn(recipesData);
-
-        Set<Recipe> recipes = recipeService.getRecipes();
-
-        assertEquals(recipes.size(), 1);
-        verify(recipeRepositories, times(1)).findAll();
     }
 }
