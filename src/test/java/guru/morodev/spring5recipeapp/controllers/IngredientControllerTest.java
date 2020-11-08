@@ -1,6 +1,8 @@
 package guru.morodev.spring5recipeapp.controllers;
 
+import guru.morodev.spring5recipeapp.commands.IngredientCommand;
 import guru.morodev.spring5recipeapp.commands.RecipeCommand;
+import guru.morodev.spring5recipeapp.services.IngredientService;
 import guru.morodev.spring5recipeapp.services.RecipeService;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +23,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class IngredientControllerTest {
 
     @Mock
+    IngredientService ingredientService;
+
+    @Mock
     RecipeService recipeService;
 
     IngredientController controller;
@@ -31,12 +36,12 @@ public class IngredientControllerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        controller = new IngredientController(recipeService);
+        controller = new IngredientController(recipeService, ingredientService);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
     @Test
-    public void listIngredients() throws Exception {
+    public void testListIngredients() throws Exception {
 
         RecipeCommand recipeCommand = new RecipeCommand();
         when(recipeService.findCommandById(anyLong())).thenReturn(recipeCommand);
@@ -47,5 +52,17 @@ public class IngredientControllerTest {
                 .andExpect(model().attributeExists("recipe"));
 
         verify(recipeService, times(1)).findCommandById(anyLong());
+    }
+
+    @Test
+    public void testShowIngredient() throws Exception {
+        IngredientCommand ingredientCommand = new IngredientCommand();
+
+        when(ingredientService.findByRecipeIdAndIngredientId(anyLong(), anyLong())).thenReturn(ingredientCommand);
+
+        mockMvc.perform(get("/recipe/1/ingredient/2/show"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("recipe/ingredient/show"))
+                .andExpect(model().attributeExists("ingredient"));
     }
 }
