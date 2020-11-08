@@ -1,5 +1,6 @@
 package guru.morodev.spring5recipeapp.services;
 
+import guru.morodev.spring5recipeapp.commands.RecipeCommand;
 import guru.morodev.spring5recipeapp.converters.RecipeCommandToRecipe;
 import guru.morodev.spring5recipeapp.converters.RecipeToRecipeCommand;
 import guru.morodev.spring5recipeapp.domain.Recipe;
@@ -55,18 +56,46 @@ public class RecipeServiceImplTest {
     }
 
     @Test
+    public void getRecipeCoomandByIdTest() throws Exception {
+        Recipe recipe = new Recipe();
+        recipe.setId(1L);
+        Optional<Recipe> recipeOptional = Optional.of(recipe);
+
+        when(recipeRepositories.findById(anyLong())).thenReturn(recipeOptional);
+
+        RecipeCommand recipeCommand = new RecipeCommand();
+        recipeCommand.setId(1L);
+
+        when(recipeToRecipeCommand.convert(any())).thenReturn(recipeCommand);
+
+        RecipeCommand commandById = recipeService.findCommandById(1L);
+
+        assertNotNull("Null recipe returned", commandById);
+        verify(recipeRepositories, times(1)).findById(anyLong());
+        verify(recipeRepositories, never()).findAll();
+    }
+
+    @Test
     public void getRecipesTest() throws Exception {
 
         Recipe recipe = new Recipe();
         HashSet receipesData = new HashSet();
         receipesData.add(recipe);
 
-        when(recipeService.getRecipes()).thenReturn(receipesData);
+        when(recipeRepositories.findAll()).thenReturn(receipesData);
 
         Set<Recipe> recipes = recipeService.getRecipes();
 
         assertEquals(recipes.size(), 1);
         verify(recipeRepositories, times(1)).findAll();
         verify(recipeRepositories, never()).findById(anyLong());
+    }
+
+    @Test
+    public void testDeleteById() throws Exception {
+        Long idToDelete = Long.valueOf(2L);
+        recipeService.deleteById(idToDelete);
+
+        verify(recipeRepositories, times(1)).deleteById(anyLong());
     }
 }

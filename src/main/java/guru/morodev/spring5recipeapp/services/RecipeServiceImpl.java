@@ -20,6 +20,7 @@ import java.util.Set;
 @Service
 public class RecipeServiceImpl implements RecipeService {
 
+
     private final RecipeRepositories recipeRepositories;
     private final RecipeCommandToRecipe recipeCommandToRecipe;
     private final RecipeToRecipeCommand recipeToRecipeCommand;
@@ -34,9 +35,9 @@ public class RecipeServiceImpl implements RecipeService {
     public Set<Recipe> getRecipes() {
         log.debug("I'm in the service");
 
-        Set<Recipe> recipes = new HashSet<>();
-        recipeRepositories.findAll().iterator().forEachRemaining(recipes::add);
-        return recipes;
+        Set<Recipe> recipeSet = new HashSet<>();
+        recipeRepositories.findAll().iterator().forEachRemaining(recipeSet::add);
+        return recipeSet;
     }
 
     @Override
@@ -53,11 +54,22 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     @Transactional
+    public RecipeCommand findCommandById(Long l) {
+        return recipeToRecipeCommand.convert(findById(l));
+    }
+
+    @Override
+    @Transactional
     public RecipeCommand saveRecipeCommand(RecipeCommand command) {
         Recipe detachedRecipe = recipeCommandToRecipe.convert(command);
 
         Recipe savedRecipe = recipeRepositories.save(detachedRecipe);
         log.debug("Saved RecipeId:" + savedRecipe.getId());
         return recipeToRecipeCommand.convert(savedRecipe);
+    }
+
+    @Override
+    public void deleteById(Long idToDelete) {
+        recipeRepositories.deleteById(idToDelete);
     }
 }
