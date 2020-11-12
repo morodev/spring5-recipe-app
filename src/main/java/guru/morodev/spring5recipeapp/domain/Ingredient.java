@@ -1,7 +1,8 @@
 package guru.morodev.spring5recipeapp.domain;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -9,7 +10,8 @@ import java.math.BigDecimal;
 /**
  * Created By Luca Moro on 26/10/2020 18:03
  */
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(exclude = {"recipe"})
 @Entity
 public class Ingredient {
