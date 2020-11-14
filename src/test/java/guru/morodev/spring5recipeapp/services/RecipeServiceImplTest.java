@@ -4,6 +4,7 @@ import guru.morodev.spring5recipeapp.commands.RecipeCommand;
 import guru.morodev.spring5recipeapp.converters.RecipeCommandToRecipe;
 import guru.morodev.spring5recipeapp.converters.RecipeToRecipeCommand;
 import guru.morodev.spring5recipeapp.domain.Recipe;
+import guru.morodev.spring5recipeapp.exceptions.NotFoundException;
 import guru.morodev.spring5recipeapp.repositories.RecipeRepositories;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,8 +56,20 @@ public class RecipeServiceImplTest {
         verify(recipeRepositories, never()).findAll();
     }
 
+    @Test(expected = NotFoundException.class)
+    public void getRecipeByIdTestNotFound() throws Exception {
+
+        Optional<Recipe> recipeOptional = Optional.empty();
+
+        when(recipeRepositories.findById(anyLong())).thenReturn(recipeOptional);
+
+        Recipe recipeReturned = recipeService.findById(1L);
+
+        //should go boom
+    }
+
     @Test
-    public void getRecipeCoomandByIdTest() throws Exception {
+    public void getRecipeCommandByIdTest() throws Exception {
         Recipe recipe = new Recipe();
         recipe.setId(1L);
         Optional<Recipe> recipeOptional = Optional.of(recipe);
@@ -82,7 +95,7 @@ public class RecipeServiceImplTest {
         HashSet receipesData = new HashSet();
         receipesData.add(recipe);
 
-        when(recipeRepositories.findAll()).thenReturn(receipesData);
+        when(recipeService.getRecipes()).thenReturn(receipesData);
 
         Set<Recipe> recipes = recipeService.getRecipes();
 
@@ -93,9 +106,16 @@ public class RecipeServiceImplTest {
 
     @Test
     public void testDeleteById() throws Exception {
+
+        //given
         Long idToDelete = Long.valueOf(2L);
+
+        //when
         recipeService.deleteById(idToDelete);
 
+        //no 'when', since method has void return type
+
+        //then
         verify(recipeRepositories, times(1)).deleteById(anyLong());
     }
 }

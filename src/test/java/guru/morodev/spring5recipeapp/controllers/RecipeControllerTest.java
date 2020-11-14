@@ -2,6 +2,7 @@ package guru.morodev.spring5recipeapp.controllers;
 
 import guru.morodev.spring5recipeapp.commands.RecipeCommand;
 import guru.morodev.spring5recipeapp.domain.Recipe;
+import guru.morodev.spring5recipeapp.exceptions.NotFoundException;
 import guru.morodev.spring5recipeapp.services.RecipeService;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,6 +55,15 @@ public class RecipeControllerTest {
     }
 
     @Test
+    public void testGetRecipeNotFound() throws Exception {
+
+        when(recipeService.findById(anyLong())).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(get("/recipe/1/show"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void testGetNewRecipeForm() throws Exception {
         RecipeCommand command = new RecipeCommand();
 
@@ -91,7 +101,6 @@ public class RecipeControllerTest {
                 .andExpect(view().name("recipe/recipeform"))
                 .andExpect(model().attributeExists("recipe"));
     }
-
 
     @Test
     public void testDeleteAction() throws Exception {
